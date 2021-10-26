@@ -12,8 +12,8 @@ from taggit.managers import TaggableManager
 class Photo(models.Model):
     image = models.ImageField(upload_to='photos/')
 
-    def __str__(self):
-        return self.image
+    # def __str__(self):
+    #     return self.image
 
 
 class Metadata(models.Model):
