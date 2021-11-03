@@ -62,7 +62,7 @@ ROOT_URLCONF = 'staceyphotoshare.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,3 +137,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media/'
+
+USE_TZ = True
+
+# Django Authentication
+LOGIN_URL = 'user:login'
+LOGIN_REDIRECT_URL = 'photo:list'
+LOGOUT_REDIRECT_URL = 'photo:list'
