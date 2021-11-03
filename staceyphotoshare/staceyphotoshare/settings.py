@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-1l_s^n$9jvbe4je^=t6oav9#%_c@lz_+a&d98a=yx4tmc71sy8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['staceyapp.pythonanywhere.com']
+ALLOWED_HOSTS = ['staceyapp.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'taggit',
+    'extra_views',
     
     # app name
     'photoshare',
+    'users',
 ]
 TAGGIT_CASE_INSENSITIVE = True
 MIDDLEWARE = [

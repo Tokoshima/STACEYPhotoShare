@@ -1,3 +1,131 @@
 from django.shortcuts import render
 
 # Create your views here.
+
+from .models import Photo, Album, Metadata
+
+from django.shortcuts import get_object_or_404
+
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
+
+from django.core.exceptions import PermissionDenied
+
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+from django.urls import reverse_lazy
+
+from extra_views import CreateWithInlinesView, InlineFormSetView, InlineFormSetFactory
+
+
+# This ListView only utilizes one model : Photo
+class PhotoListView(ListView):
+    model = Photo
+
+    template_name = 'photoshare/list.html'
+
+    context_object_name = 'photos'
+
+
+# Views the tags
+class PhotoTagListView(PhotoListView):
+    template_name = 'photoshare/taglist.html'
+
+    # Custom method
+    def get_tag(self):
+        return self.kwargs.get('tag')
+
+    def get_queryset(self):
+        return self.model.objects.filter(tags__slug=self.get_tag())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tag"] = self.get_tag()
+        return context
+
+
+# This DetailView gets the detail of the photo clicked. Only has one model as the Metadata model gets the Photo by
+# default.
+class MetadataView(DetailView):
+    model = Metadata
+
+    template_name = 'photoshare/detail.html'
+
+    context_object_name = 'photo'
+
+
+# One model(Metadata) approach
+class PhotoCreateView(LoginRequiredMixin, CreateView):
+    model = Metadata  # Change to photo if error
+
+    fields = ['title', 'description', 'created', 'submitter', 'tags', 'photo']
+
+    template_name = 'photoshare/create.html'
+
+    success_url = reverse_lazy('photo:list')
+
+    def form_valid(self, form):
+        form.instance.submitter = self.request.user
+
+        return super().form_valid(form)
+
+
+# Two model approach
+# class MetadataInline(InlineFormSetFactory):
+#     model = Metadata
+#
+#     fields = ['title', 'description', 'created', 'submitter', 'tags', 'photo']
+#
+#
+# class PhotoCreateView(LoginRequiredMixin, CreateWithInlinesView):
+#     model = Photo
+#     # TODO
+#
+#     inlines = [MetadataInline]
+#
+#     fields = ['image']
+#
+#     template_name = 'photoshare/create.html'
+#
+#     success_url = reverse_lazy('photo:list')
+#
+#     def form_valid(self, form):
+#         form.instance.submitter = self.request.user
+#
+#         return super().form_valid(form)
+
+
+class UserIsSubmitter(UserPassesTestMixin):
+
+    # Custom method
+    def get_photo(self):
+        return get_object_or_404(Photo, pk=self.kwargs.get('pk'))
+
+    def test_func(self):
+
+        if self.request.user.is_authenticated:
+            return self.request.user == self.get_photo().submitter
+        else:
+            raise PermissionDenied('Sorry you are not allowed here')
+
+
+class PhotoUpdateView(UserIsSubmitter, UpdateView):
+    # TODO
+
+    template_name = 'photoshare/update.html'
+
+    model = Metadata  # Change to photo if error
+
+    fields = ['title', 'description', 'created', 'submitter', 'tags', 'photo']
+
+    success_url = reverse_lazy('photo:list')
+
+
+# Delete unknown, find out for Metadata delete and Photo delete
+class PhotoDeleteView(UserIsSubmitter, DeleteView):
+    # TODO
+
+    template_name = 'photoshare/delete.html'
+
+    model = Metadata  # Change to photo if error
+
+    success_url = reverse_lazy('photo:list')
