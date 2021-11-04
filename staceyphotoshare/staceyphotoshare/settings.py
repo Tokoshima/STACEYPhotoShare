@@ -41,7 +41,8 @@ INSTALLED_APPS = [
 
     'taggit',
     'extra_views',
-    
+    'crispy_forms',
+
     # app name
     'photoshare',
     'users',
@@ -138,7 +139,6 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media/'
 
-USE_TZ = True
 
 # Django Authentication
 LOGIN_URL = 'user:login'

@@ -2,6 +2,8 @@ from django.urls import path
 
 from .views import PhotoListView, PhotoDeleteView, PhotoTagListView, PhotoCreateView, PhotoUpdateView, MetadataView
 
+app_name = 'photo'
+
 urlpatterns = [
     path('', PhotoListView.as_view(), name='list'),
 
