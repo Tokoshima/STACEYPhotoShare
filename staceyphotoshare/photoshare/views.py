@@ -117,7 +117,7 @@ class PhotoUpdateView(UserIsSubmitter, UpdateWithInlinesView):
     # TODO
 
     template_name = 'photoshare/update.html'
-
+    #todo
     model = Photo  # Change to photo if error
 
     inlines = [MetadataInline]
