@@ -1,8 +1,9 @@
 from django.urls import path
 
-from .views import PhotoListView, PhotoDeleteView, PhotoTagListView, PhotoCreateView, PhotoUpdateView, MetadataView
+from .views import PhotoListView, PhotoDeleteView, PhotoTagListView, PhotoUpdateView, PhotoCreateView, MetadataView
 
-app_name = 'photo'
+# app_name = 'photo'
+app_name = 'photoshare'
 
 urlpatterns = [
     path('', PhotoListView.as_view(), name='list'),

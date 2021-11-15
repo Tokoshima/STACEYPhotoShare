@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from django.urls import reverse_lazy
 
-from extra_views import CreateWithInlinesView, InlineFormSetView, InlineFormSetFactory
+from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetView, InlineFormSetFactory
 
 
 # This ListView only utilizes one model : Photo
@@ -22,7 +22,7 @@ class PhotoListView(ListView):
     model = Photo
 
     template_name = 'photoshare/list.html'
-
+    # gives a common name to the model
     context_object_name = 'photos'
 
 
@@ -49,40 +49,15 @@ class MetadataView(DetailView):
     model = Metadata
 
     template_name = 'photoshare/detail.html'
-
-    context_object_name = 'photo'
+    # gives a common name to the model
+    context_object_name = 'detail'
 
 
 # One model(Metadata) approach
-class PhotoCreateView(LoginRequiredMixin, CreateView):
-    model = Metadata  # Change to photo if error
-
-    fields = ['title', 'description', 'created', 'submitter', 'tags', 'photo']
-
-    template_name = 'photoshare/create.html'
-
-    success_url = reverse_lazy('photo:list')
-
-    def form_valid(self, form):
-        form.instance.submitter = self.request.user
-
-        return super().form_valid(form)
-
-
-# Two model approach
-# class MetadataInline(InlineFormSetFactory):
-#     model = Metadata
+# class PhotoCreateView(LoginRequiredMixin, CreateView):
+#     model = Metadata  # Change to photo if error
 #
-#     fields = ['title', 'description', 'created', 'submitter', 'tags', 'photo']
-#
-#
-# class PhotoCreateView(LoginRequiredMixin, CreateWithInlinesView):
-#     model = Photo
-#     # TODO
-#
-#     inlines = [MetadataInline]
-#
-#     fields = ['image']
+#     fields = ['title', 'description', 'tags', 'photo']
 #
 #     template_name = 'photoshare/create.html'
 #
@@ -92,32 +67,64 @@ class PhotoCreateView(LoginRequiredMixin, CreateView):
 #         form.instance.submitter = self.request.user
 #
 #         return super().form_valid(form)
+#
+
+
+# Two model approach
+class MetadataInline(InlineFormSetFactory):
+    model = Metadata
+
+    fields = ['title', 'description', 'submitter', 'tags', 'photo']
+
+
+class PhotoCreateView(LoginRequiredMixin, CreateWithInlinesView):
+    model = Photo
+    # TODO
+
+    inlines = [MetadataInline]
+
+    fields = ['image']
+
+    template_name = 'photoshare/create.html'
+
+    success_url = reverse_lazy('photoshare:list')
+
+    def form_valid(self, form):
+        form.instance.submitter = self.request.user
+
+        return super().form_valid(form)
 
 
 class UserIsSubmitter(UserPassesTestMixin):
 
     # Custom method
+    def get_metadata(self):
+        return get_object_or_404(Metadata, pk=self.kwargs.get('pk'))
+
     def get_photo(self):
         return get_object_or_404(Photo, pk=self.kwargs.get('pk'))
 
     def test_func(self):
 
         if self.request.user.is_authenticated:
-            return self.request.user == self.get_photo().submitter
+            return self.request.user == self.get_metadata().submitter
+
         else:
             raise PermissionDenied('Sorry you are not allowed here')
 
 
-class PhotoUpdateView(UserIsSubmitter, UpdateView):
+class PhotoUpdateView(UserIsSubmitter, UpdateWithInlinesView):
     # TODO
 
     template_name = 'photoshare/update.html'
 
-    model = Metadata  # Change to photo if error
+    model = Photo  # Change to photo if error
 
-    fields = ['title', 'description', 'created', 'submitter', 'tags', 'photo']
+    inlines = [MetadataInline]
 
-    success_url = reverse_lazy('photo:list')
+    fields = ['image']
+
+    success_url = reverse_lazy('photoshare:list')
 
 
 # Delete unknown, find out for Metadata delete and Photo delete
@@ -126,6 +133,6 @@ class PhotoDeleteView(UserIsSubmitter, DeleteView):
 
     template_name = 'photoshare/delete.html'
 
-    model = Metadata  # Change to photo if error
+    model = Photo  # Change to photo if error
 
-    success_url = reverse_lazy('photo:list')
+    success_url = reverse_lazy('photoshare:list')

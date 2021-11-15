@@ -16,12 +16,13 @@ class Photo(models.Model):
     #     return self.image
 
 
+# metadata.photo.image
 class Metadata(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
     created = models.DateTimeField(auto_now_add=True)
     submitter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    #image = models.ForeignKey(Photo, on_delete=models.CASCADE, default=1)
+    # image = models.ForeignKey(Photo, on_delete=models.CASCADE, default=1)
     tags = TaggableManager()
     photo = models.OneToOneField(Photo, on_delete=models.CASCADE, primary_key=True)
 
@@ -36,4 +37,3 @@ class Album(models.Model):
 
     def __str__(self):
         return self.title
-
