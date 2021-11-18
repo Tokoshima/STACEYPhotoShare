@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -74,7 +75,7 @@ class MetadataView(DetailView):
 class MetadataInline(InlineFormSetFactory):
     model = Metadata
 
-    fields = ['title', 'description', 'submitter', 'tags', 'photo']
+    fields = ['title', 'description', 'submitter', 'location', 'tags', 'photo', 'access']
 
 
 class PhotoCreateView(LoginRequiredMixin, CreateWithInlinesView):
@@ -83,7 +84,7 @@ class PhotoCreateView(LoginRequiredMixin, CreateWithInlinesView):
 
     inlines = [MetadataInline]
 
-    fields = ['image']
+    fields = ['image', 'submitter', 'access']
 
     template_name = 'photoshare/create.html'
 
@@ -117,7 +118,7 @@ class PhotoUpdateView(UserIsSubmitter, UpdateWithInlinesView):
     # TODO
 
     template_name = 'photoshare/update.html'
-    #todo123
+
     model = Photo  # Change to photo if error
 
     inlines = [MetadataInline]

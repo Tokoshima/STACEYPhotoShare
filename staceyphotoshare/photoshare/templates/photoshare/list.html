@@ -2,15 +2,44 @@
 
 {% block body %}
 
+{% if user.username == '' %}
+  <p class="text-center">Please log in or create an account</p>
+{% else %}
 <div class="row">
+<h1>My Photos</h1>
   {% for photo in photos %}
-  <div class="col-lg-3 col-md-4 col-xs-6">
-    <a href=" {% url 'photoshare:metadata' photo.id %}" class="d-block mb-4 h-100">
-      <img src="{{photo.image.url}}" class="img-fluid rounded" alt="" />
-    </a>
-    <p>"{{photo.title}}"</p>
-  </div>
+
+    {% if user.username == photo.submitter.username %}
+
+      <div class="col-lg-3 col-md-5 col-xs-7">
+        <a href=" {% url 'photoshare:metadata' photo.id %}" class="d-block mb-4 h-100">
+          <img src="{{photo.image.url}}" class="img-fluid rounded"/>
+        </a>
+        <p>"{{photo.title}}"</p>
+      </div>
+    {% endif %}
+
   {% endfor %}
+
+ <h1>Shared Photos</h1>
+
+  {% for photo in photos %}
+
+    {% if user.username == photo.access.username %}
+
+      <div class="col-lg-3 col-md-4 col-xs-6">
+        <a href=" {% url 'photoshare:metadata' photo.id %}" class="d-block mb-4 h-100">
+          <img src="{{photo.image.url}}" class="img-fluid rounded"/>
+        </a>
+        <p>"{{photo.title}}"</p>
+      </div>
+    {% endif %}
+
+  {% endfor %}
+
 </div>
+{% endif %}
+
 
 {% endblock body %}
+
