@@ -90,6 +90,14 @@ class PhotoCreateView(LoginRequiredMixin, CreateWithInlinesView):
 
     success_url = reverse_lazy('photoshare:list')
 
+    # def __init__(self, *args, **kwargs):
+    #     super(Photo, self).__init__(*args, **kwargs)
+    #     self.initial['title'] = 'Initial value'
+
+    # def get_initial(self):
+    #     # call super if needed
+    #     return {'title': 'init'}
+
     def form_valid(self, form):
         form.instance.submitter = self.request.user
 
