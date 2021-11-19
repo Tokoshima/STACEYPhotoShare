@@ -14,6 +14,7 @@ class Photo(models.Model):
     submitter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='submitter_type')
     access = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='accessor_type')
 
+
     # def __str__(self):
     #     return self.image
 

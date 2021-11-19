@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block body %}
@@ -5,26 +6,30 @@
 
 
     {% if user.username == detail.submitter.username or user.username == detail.access.username %}
-   <h1 class="text-center">{{ detail.title }}</h1>
-  <p class="text-center fw-light">Uploaded on: {{detail.created}} <br> By {{detail.submitter.username}}</p>
+   <h1 class="">{{ detail.title }}</h1>
+  <p class=" ">Uploaded on: {{detail.created}} <br> By {{detail.submitter.username}}</p>
+    <p class="">Access: {{detail.access.username}}</p>
+    <a href="/media/{{detail.photo.image}}" download="photo"><button type ="button"  class="btn btn-primary">Download Image</button></a>
+    <p></p>
+    <a href="{% url 'photoshare:update' detail.photo.id %}"><button type ="button"  class="btn btn-warning">Update</button></a>
+    <a href="{% url 'photoshare:delete' detail.photo.id %}"><button type ="button"  class="btn btn-danger">Delete</button></a>
+    <p></p>
 
-        <div class="row pb-5">
+
   <div class="col-md-8">
     <img src="{{detail.photo.image.url}}" alt="" width="100%" />
-<!--      http://127.0.0.1:8000/media/photos/R1-07063-0018_0nFnkDx.JPG-->
-      {{detail.photo.image}}
-
   </div>
   <div class="col-md-4">
-    <h4>More about this photo:</h4>
+    <h4>Information:</h4>
+      <h6>Tags</h6>
     <ul class="list-group list-group-horizontal-lg list-unstyled py-4">
       {% for tag in detail.tags.all %}
-        <li><a href="{% url 'photoshare:tag' tag.slug %}" class="btn btn-sm list-group-item list-group-item-primary">{{tag.name}}</a></li>
+        <li><a href="{% url 'photoshare:tag' tag.slug %}" class="btn btn-sm list-group-item">{{tag.name}}</a></li>
       {% endfor %}
     </ul>
+      <h6>Description</h6>
     <p>{{ detail.description }}</p>
 
-      <a href="/media/{{detail.photo.image}}" download="photo"><button type ="button"  class="btn btn-primary">Download Image</button></a>
 
   </div>
 </div>
