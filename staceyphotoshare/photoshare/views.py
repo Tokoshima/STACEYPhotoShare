@@ -1,4 +1,3 @@
-
 from django.shortcuts import render
 
 # Create your views here.
@@ -16,6 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetView, InlineFormSetFactory
+
+from django.db.models import Q
 
 
 # This ListView only utilizes one model : Photo
@@ -145,3 +146,19 @@ class PhotoDeleteView(UserIsSubmitter, DeleteView):
     model = Photo  # Change to photo if error
 
     success_url = reverse_lazy('photoshare:list')
+
+
+class SearchResultsView(ListView):
+    model = Metadata
+    template_name = 'search_results.html'
+    queryset = Metadata.objects.filter(description__icontains='Cow qr')
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            object_list = Metadata.objects.filter(
+                Q(description__icontains=query) | Q(title__icontains=query)
+            )
+            return object_list
+
+

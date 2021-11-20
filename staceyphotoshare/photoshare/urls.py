@@ -1,9 +1,13 @@
 from django.urls import path
 
-from .views import PhotoListView, PhotoDeleteView, PhotoTagListView, PhotoUpdateView, PhotoCreateView, MetadataView
+from .views import PhotoListView, PhotoDeleteView, PhotoTagListView, PhotoUpdateView, PhotoCreateView, MetadataView, SearchResultsView
 
 # app_name = 'photo'
 app_name = 'photoshare'
+
+
+
+
 
 urlpatterns = [
     path('', PhotoListView.as_view(), name='list'),
@@ -17,5 +21,7 @@ urlpatterns = [
     path('photo/<int:pk>/update/', PhotoUpdateView.as_view(), name='update'),
 
     path('photo/<int:pk>/', MetadataView.as_view(), name='metadata'),
+
+    path('search/', SearchResultsView.as_view(), name='search_results'),
 
 ]
