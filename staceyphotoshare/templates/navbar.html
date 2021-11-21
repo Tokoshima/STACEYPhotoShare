@@ -2,7 +2,7 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #0000FF;">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'photoshare:list' %}"><img src="" width=120 height=120 class="" alt="">PhotoShare</a>
+    <a class="navbar-brand" href="{% url 'photoshare:list' %}">STACEY PhotoShare</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -20,10 +20,10 @@
     >
       <ul class="navbar-nav">
         {% if user.is_authenticated %}
-        <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+        <form action = "{% url 'photoshare:search_results' %}" method="get" class="d-flex">
+          <input name = "Q" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
         <li class="nav-item">
           <a class="nav-link active" href="{% url 'photoshare:create' %}">Add a photo</a>
         </li>
